@@ -38,7 +38,25 @@ let noTimeblocks = [
   }
 ]
 let timeblocks
+// time
+const hours = new Date()
 
+// function that sets colors
+const myColor = _ => {
+  let myPrefix = 'hour-'
+
+  for (let i = 9; i < timeblocks.length + 9; i++) {
+    myPrefix = 'hour-'
+    myPrefix += i
+    if (i < hours.getHours()) {
+      document.getElementById(myPrefix).children[1].classList.add('past')
+    } else if (i === hours.getHours()) {
+      document.getElementById(myPrefix).children[1].classList.add('present')
+    } else {
+      document.getElementById(myPrefix).children[1].classList.add('future')
+    }
+  }
+}
 // function that turns timeblock into local memory
 const toMemory = _ => {
   localStorage.setItem('timeblocks', JSON.stringify(timeblocks))
@@ -50,21 +68,18 @@ const fromMemory = _ =>{
 // function that renders it out the array
 const renderMemory = _ =>{
   fromMemory()
-  console.log(timeblocks)
-  console.log(JSON.parse(localStorage.getItem('timeblocks')))
   for (let i = 0; i < timeblocks.length; i++) {
-    document.getElementById(timeblocks[i].time).children[1].textContent = timeblocks[i].input
-    console.log(timeblocks[i].input)
-    // let thisID = '#timeblocks[i].time'
-    // // let childTwo = $(thisID).children('.description')
-    // console.log($(thisID).attr('class'))
-    // // console.log(childTwo).attr('class')
+    document.getElementById(timeblocks[i].time).children[1].innerHTML = timeblocks[i].input
   }
+  myColor()
 }
 
 // initalize local memory
 fromMemory()
 toMemory()
+myColor()
+// initalize array onto screen
+renderMemory()
 
 $(document).click(event => {
   event.preventDefault()
@@ -73,8 +88,7 @@ $(document).click(event => {
     // grab text input
     let txt = $(event.target).siblings('.description').val()
     let pid = $(event.target).parent().attr('id')
-    console.log('pid = ' + pid)
-    console.log(timeblocks[0].time)
+
     // set txt to the timeblock array
     for (let i = 0; i < timeblocks.length; i++) {
       if (timeblocks[i].time === pid) {
@@ -87,10 +101,6 @@ $(document).click(event => {
     // grab text input
     let txt = $(event.target).parent().siblings('.description').val()
     let pid = $(event.target).parent().parent().attr('id')
-    console.log('pid = ' + pid)
-    console.log('txt = ')
-    console.log(timeblocks[0].time)
-    console.log('txt = ' + txt)
     // set txt to the timeblock array
     for (let i = 0; i < timeblocks.length; i++) {
       if (timeblocks[i].time === pid) {
